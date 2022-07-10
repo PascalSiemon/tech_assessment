@@ -1,0 +1,2825 @@
+{
+  "basePath": "/open-banking/v2.0",
+  "definitions": {},
+  "host": "ob.sandbox.natwest.com",
+  "info": {
+    "contact": {
+      "email": "ServiceDesk@openbanking.org.uk",
+      "name": "Service Desk"
+    },
+    "description": "Swagger for Account and Transaction API Specification",
+    "license": {
+      "name": "open-licence",
+      "url": "https://www.openbanking.org.uk/open-licence"
+    },
+    "termsOfService": "https://www.openbanking.org.uk/terms",
+    "title": "Account and Transaction API Specification",
+    "version": "v2.0.0"
+  },
+  "paths": {
+    "/account-requests": {
+      "post": {
+        "consumes": [
+          "application/json; charset=utf-8"
+        ],
+        "description": "Create an account request",
+        "operationId": "CreateAccountRequest",
+        "parameters": [
+          {
+            "description": "Create an Account Request",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "additionalProperties": false,
+              "description": "Allows setup of an account access request",
+              "properties": {
+                "Data": {
+                  "additionalProperties": false,
+                  "description": "Allows setup of an account access request",
+                  "properties": {
+                    "ExpirationDateTime": {
+                      "description": "Specified date and time the permissions will expire. If this is not populated, the permissions will be open ended. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "Permissions": {
+                      "additionalProperties": false,
+                      "description": "Specifies the Open Banking account request types. This is a list of the data clusters being consented by the PSU, and requested for authorisation with the ASPSP.",
+                      "items": {
+                        "description": "Specifies the Open Banking account request types. This is a list of the data clusters being consented by the PSU, and requested for authorisation with the ASPSP.",
+                        "enum": [
+                          "ReadAccountsBasic",
+                          "ReadAccountsDetail",
+                          "ReadBalances",
+                          "ReadBeneficiariesBasic",
+                          "ReadBeneficiariesDetail",
+                          "ReadDirectDebits",
+                          "ReadProducts",
+                          "ReadStandingOrdersBasic",
+                          "ReadStandingOrdersDetail",
+                          "ReadTransactionsBasic",
+                          "ReadTransactionsCredits",
+                          "ReadTransactionsDebits",
+                          "ReadTransactionsDetail"
+                        ],
+                        "type": "string"
+                      },
+                      "minProperties": 1,
+                      "type": "array"
+                    },
+                    "TransactionFromDateTime": {
+                      "description": "Specified start date and time for the transaction query period. If this is not populated, the start date will be open ended, and data will be returned from the earliest available transaction. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "TransactionToDateTime": {
+                      "description": "Specified end date and time for the transaction query period. If this is not populated, the end date will be open ended, and data will be returned to the latest available transaction. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Permissions"
+                  ],
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Risk": {
+                  "additionalProperties": false,
+                  "description": "The Risk payload is sent by the initiating party to the ASPSP. It is used to specify additional details for risk scoring for Account Info.",
+                  "properties": {},
+                  "title": "Risk",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Risk"
+              ],
+              "title": "Account Request POST request",
+              "type": "object"
+            }
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Header containing a detached JWS signature of the body of the payload.",
+            "in": "header",
+            "name": "x-jws-signature",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "201": {
+            "description": "Account Request resource successfully created",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "additionalProperties": false,
+                  "description": "Account Request Response",
+                  "properties": {
+                    "AccountRequestId": {
+                      "description": "Unique identification as assigned to identify the account request resource.",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "CreationDateTime": {
+                      "description": "Date and time at which the resource was created. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "ExpirationDateTime": {
+                      "description": "Specified date and time the permissions will expire. If this is not populated, the permissions will be open ended. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "Permissions": {
+                      "additionalProperties": false,
+                      "description": "Specifies the Open Banking account request types. This is a list of the data clusters being consented by the PSU, and requested for authorisation with the ASPSP.",
+                      "items": {
+                        "description": "Specifies the Open Banking account request types. This is a list of the data clusters being consented by the PSU, and requested for authorisation with the ASPSP.",
+                        "enum": [
+                          "ReadAccountsBasic",
+                          "ReadAccountsDetail",
+                          "ReadBalances",
+                          "ReadBeneficiariesBasic",
+                          "ReadBeneficiariesDetail",
+                          "ReadDirectDebits",
+                          "ReadProducts",
+                          "ReadStandingOrdersBasic",
+                          "ReadStandingOrdersDetail",
+                          "ReadTransactionsBasic",
+                          "ReadTransactionsCredits",
+                          "ReadTransactionsDebits",
+                          "ReadTransactionsDetail"
+                        ],
+                        "type": "string"
+                      },
+                      "minProperties": 1,
+                      "type": "array"
+                    },
+                    "Status": {
+                      "description": "Specifies the status of the account request resource.",
+                      "enum": [
+                        "Authorised",
+                        "AwaitingAuthorisation",
+                        "Rejected",
+                        "Revoked"
+                      ],
+                      "type": "string"
+                    },
+                    "StatusUpdateDateTime": {
+                      "description": "Date and time at which the resource status was updated.\nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "TransactionFromDateTime": {
+                      "description": "Specified start date and time for the transaction query period. If this is not populated, the start date will be open ended, and data will be returned from the earliest available transaction. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "TransactionToDateTime": {
+                      "description": "Specified end date and time for the transaction query period. If this is not populated, the end date will be open ended, and data will be returned to the latest available transaction. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "AccountRequestId",
+                    "CreationDateTime",
+                    "Permissions"
+                  ],
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                },
+                "Risk": {
+                  "additionalProperties": false,
+                  "description": "The Risk payload is sent by the initiating party to the ASPSP. It is used to specify additional details for risk scoring for Account Info.",
+                  "properties": {},
+                  "title": "Risk",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Risk",
+                "Links",
+                "Meta"
+              ],
+              "title": "Account Request POST response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "TPPOAuth2Security": [
+              "tpp_client_credential"
+            ]
+          }
+        ],
+        "summary": "Create an account request"
+      }
+    },
+    "/account-requests/{AccountRequestId}": {
+      "delete": {
+        "description": "Delete an account request",
+        "operationId": "DeleteAccountRequest",
+        "parameters": [
+          {
+            "description": "Unique identification as assigned by the ASPSP to uniquely identify the account request resource.",
+            "in": "path",
+            "name": "AccountRequestId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "204": {
+            "description": "Account Request resource successfully deleted",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "TPPOAuth2Security": [
+              "tpp_client_credential"
+            ]
+          }
+        ],
+        "summary": "Delete an account request"
+      },
+      "get": {
+        "description": "Get an account request",
+        "operationId": "GetAccountRequest",
+        "parameters": [
+          {
+            "description": "Unique identification as assigned by the ASPSP to uniquely identify the account request resource.",
+            "in": "path",
+            "name": "AccountRequestId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Request resource successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "additionalProperties": false,
+                  "description": "Account Request Response",
+                  "properties": {
+                    "AccountRequestId": {
+                      "description": "Unique identification as assigned to identify the account request resource.",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "CreationDateTime": {
+                      "description": "Date and time at which the resource was created. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "ExpirationDateTime": {
+                      "description": "Specified date and time the permissions will expire. If this is not populated, the permissions will be open ended. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "Permissions": {
+                      "additionalProperties": false,
+                      "description": "Specifies the Open Banking account request types. This is a list of the data clusters being consented by the PSU, and requested for authorisation with the ASPSP.",
+                      "items": {
+                        "description": "Specifies the Open Banking account request types. This is a list of the data clusters being consented by the PSU, and requested for authorisation with the ASPSP.",
+                        "enum": [
+                          "ReadAccountsBasic",
+                          "ReadAccountsDetail",
+                          "ReadBalances",
+                          "ReadBeneficiariesBasic",
+                          "ReadBeneficiariesDetail",
+                          "ReadDirectDebits",
+                          "ReadProducts",
+                          "ReadStandingOrdersBasic",
+                          "ReadStandingOrdersDetail",
+                          "ReadTransactionsBasic",
+                          "ReadTransactionsCredits",
+                          "ReadTransactionsDebits",
+                          "ReadTransactionsDetail"
+                        ],
+                        "type": "string"
+                      },
+                      "minProperties": 1,
+                      "type": "array"
+                    },
+                    "Status": {
+                      "description": "Specifies the status of the account request resource.",
+                      "enum": [
+                        "Authorised",
+                        "AwaitingAuthorisation",
+                        "Rejected",
+                        "Revoked"
+                      ],
+                      "type": "string"
+                    },
+                    "StatusUpdateDateTime": {
+                      "description": "Date and time at which the resource status was updated.\nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "TransactionFromDateTime": {
+                      "description": "Specified start date and time for the transaction query period. If this is not populated, the start date will be open ended, and data will be returned from the earliest available transaction. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "TransactionToDateTime": {
+                      "description": "Specified end date and time for the transaction query period. If this is not populated, the end date will be open ended, and data will be returned to the latest available transaction. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "AccountRequestId",
+                    "CreationDateTime",
+                    "Permissions"
+                  ],
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                },
+                "Risk": {
+                  "additionalProperties": false,
+                  "description": "The Risk payload is sent by the initiating party to the ASPSP. It is used to specify additional details for risk scoring for Account Info.",
+                  "properties": {},
+                  "title": "Risk",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Risk",
+                "Links",
+                "Meta"
+              ],
+              "title": "Account Request GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "TPPOAuth2Security": [
+              "tpp_client_credential"
+            ]
+          }
+        ],
+        "summary": "Get an account request"
+      }
+    },
+    "/accounts": {
+      "get": {
+        "description": "Get a list of accounts",
+        "operationId": "GetAccounts",
+        "parameters": [
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "Account": {
+                      "additionalProperties": false,
+                      "description": "Account",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Account",
+                        "properties": {
+                          "Account": {
+                            "additionalProperties": false,
+                            "description": "Provides the details to identify an account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Identification assigned by an institution to identify an account. This identification is known by the account owner.",
+                                "maxLength": 34,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "Name": {
+                                "description": "Name of the account, as assigned by the account servicing institution, in agreement with the account owner in order to provide an additional means of identification of the account. Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number.",
+                                "maxLength": 70,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "IBAN",
+                                  "SortCodeAccountNumber"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          },
+                          "AccountId": {
+                            "description": "A unique and immutable identifier used to identify the account resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "AccountSubType": {
+                            "description": "Specifies the sub type of account (product family group).",
+                            "enum": [
+                              "ChargeCard",
+                              "CreditCard",
+                              "CurrentAccount",
+                              "EMoney",
+                              "Loan",
+                              "Mortgage",
+                              "PrePaidCard",
+                              "Savings"
+                            ],
+                            "type": "string"
+                          },
+                          "AccountType": {
+                            "description": "Specifies the type of account (personal or business).",
+                            "enum": [
+                              "Business",
+                              "Personal"
+                            ],
+                            "type": "string"
+                          },
+                          "Currency": {
+                            "description": "Identification of the currency in which the account is held.  Usage: Currency should only be used in case one and the same account number covers several currencies and the initiating party needs to identify which currency needs to be used for settlement on the account.",
+                            "pattern": "^[A-Z]{3,3}$",
+                            "type": "string"
+                          },
+                          "Description": {
+                            "description": "Specifies the description of the account type.",
+                            "maxLength": 35,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "Servicer": {
+                            "additionalProperties": false,
+                            "description": "Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Unique and unambiguous identification of the servicing institution.",
+                                "maxLength": 35,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "BICFI"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "AccountId",
+                          "Currency",
+                          "AccountType",
+                          "AccountSubType"
+                        ],
+                        "title": "Account",
+                        "type": "object"
+                      },
+                      "title": "Account",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Account GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Accounts"
+      }
+    },
+    "/accounts/{AccountId}": {
+      "get": {
+        "description": "Get an account",
+        "operationId": "GetAccount",
+        "parameters": [
+          {
+            "description": "A unique identifier used to identify the account resource.",
+            "in": "path",
+            "name": "AccountId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account resource successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "Account": {
+                      "additionalProperties": false,
+                      "description": "Account",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Account",
+                        "properties": {
+                          "Account": {
+                            "additionalProperties": false,
+                            "description": "Provides the details to identify an account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Identification assigned by an institution to identify an account. This identification is known by the account owner.",
+                                "maxLength": 34,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "Name": {
+                                "description": "Name of the account, as assigned by the account servicing institution, in agreement with the account owner in order to provide an additional means of identification of the account. Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number.",
+                                "maxLength": 70,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "IBAN",
+                                  "SortCodeAccountNumber"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          },
+                          "AccountId": {
+                            "description": "A unique and immutable identifier used to identify the account resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "AccountSubType": {
+                            "description": "Specifies the sub type of account (product family group).",
+                            "enum": [
+                              "ChargeCard",
+                              "CreditCard",
+                              "CurrentAccount",
+                              "EMoney",
+                              "Loan",
+                              "Mortgage",
+                              "PrePaidCard",
+                              "Savings"
+                            ],
+                            "type": "string"
+                          },
+                          "AccountType": {
+                            "description": "Specifies the type of account (personal or business).",
+                            "enum": [
+                              "Business",
+                              "Personal"
+                            ],
+                            "type": "string"
+                          },
+                          "Currency": {
+                            "description": "Identification of the currency in which the account is held.  Usage: Currency should only be used in case one and the same account number covers several currencies and the initiating party needs to identify which currency needs to be used for settlement on the account.",
+                            "pattern": "^[A-Z]{3,3}$",
+                            "type": "string"
+                          },
+                          "Description": {
+                            "description": "Specifies the description of the account type.",
+                            "maxLength": 35,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "Servicer": {
+                            "additionalProperties": false,
+                            "description": "Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Unique and unambiguous identification of the servicing institution.",
+                                "maxLength": 35,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "BICFI"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "AccountId",
+                          "Currency",
+                          "AccountType",
+                          "AccountSubType"
+                        ],
+                        "title": "Account",
+                        "type": "object"
+                      },
+                      "title": "Account",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Account GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Account"
+      }
+    },
+    "/accounts/{AccountId}/balances": {
+      "get": {
+        "description": "Get Balances related to an account",
+        "operationId": "GetAccountBalances",
+        "parameters": [
+          {
+            "description": "A unique identifier used to identify the account resource.",
+            "in": "path",
+            "name": "AccountId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Beneficiaries successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "Balance": {
+                      "additionalProperties": false,
+                      "description": "Balance",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Balance",
+                        "properties": {
+                          "AccountId": {
+                            "description": "A unique and immutable identifier used to identify the account resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "Amount": {
+                            "additionalProperties": false,
+                            "description": "Amount of money of the cash balance.",
+                            "properties": {
+                              "Amount": {
+                                "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+                                "type": "string"
+                              },
+                              "Currency": {
+                                "description": "A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 'Codes for the representation of currencies and funds'",
+                                "pattern": "^[A-Z]{3,3}$",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "Amount",
+                              "Currency"
+                            ],
+                            "type": "object"
+                          },
+                          "CreditDebitIndicator": {
+                            "description": "Indicates whether the balance is a credit or a debit balance. Usage: A zero balance is considered to be a credit balance.",
+                            "enum": [
+                              "Credit",
+                              "Debit"
+                            ],
+                            "type": "string"
+                          },
+                          "CreditLine": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "Amount": {
+                                  "additionalProperties": false,
+                                  "description": "Active Or Historic Currency Code and Amount",
+                                  "properties": {
+                                    "Amount": {
+                                      "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+                                      "type": "string"
+                                    },
+                                    "Currency": {
+                                      "description": "A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 'Codes for the representation of currencies and funds'",
+                                      "pattern": "^[A-Z]{3,3}$",
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "Amount",
+                                    "Currency"
+                                  ],
+                                  "type": "object"
+                                },
+                                "Included": {
+                                  "description": "Indicates whether or not the credit line is included in the balance of the account. Usage: If not present, credit line is not included in the balance amount of the account.",
+                                  "type": "boolean"
+                                },
+                                "Type": {
+                                  "description": "Limit type, in a coded form.",
+                                  "enum": [
+                                    "Pre-Agreed",
+                                    "Emergency",
+                                    "Temporary"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "Included"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "DateTime": {
+                            "description": "Indicates the date (and time) of the balance. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "Type": {
+                            "description": "Balance type, in a coded form.",
+                            "enum": [
+                              "ClosingAvailable",
+                              "ClosingBooked",
+                              "Expected",
+                              "ForwardAvailable",
+                              "Information",
+                              "InterimAvailable",
+                              "InterimBooked",
+                              "OpeningAvailable",
+                              "OpeningBooked",
+                              "PreviouslyClosedBooked"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "AccountId",
+                          "Amount",
+                          "CreditDebitIndicator",
+                          "DateTime",
+                          "Type"
+                        ],
+                        "title": "Balance",
+                        "type": "object"
+                      },
+                      "minItems": 1,
+                      "title": "Balance",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Balances GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Account Balances"
+      }
+    },
+    "/accounts/{AccountId}/beneficiaries": {
+      "get": {
+        "description": "Get Beneficiaries related to an account",
+        "operationId": "GetAccountBeneficiaries",
+        "parameters": [
+          {
+            "description": "A unique identifier used to identify the account resource.",
+            "in": "path",
+            "name": "AccountId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Beneficiaries  successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "Beneficiary": {
+                      "additionalProperties": false,
+                      "description": "Beneficiary",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Beneficiary",
+                        "properties": {
+                          "AccountId": {
+                            "description": "A unique and immutable identifier used to identify the account resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "BeneficiaryId": {
+                            "description": "A unique and immutable identifier used to identify the beneficiary resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "CreditorAccount": {
+                            "additionalProperties": false,
+                            "description": "Provides the details to identify the beneficiary account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Identification assigned by an institution to identify an account. This identification is known by the account owner.",
+                                "maxLength": 34,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "Name": {
+                                "description": "Name of the account, as assigned by the account servicing institution, in agreement with the account owner in order to provide an additional means of identification of the account. Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number.",
+                                "maxLength": 70,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "IBAN",
+                                  "SortCodeAccountNumber"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          },
+                          "CreditorAgent": {
+                            "additionalProperties": false,
+                            "description": "Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account. This is the servicer of the beneficiary account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Unique and unambiguous identification of the servicing institution.",
+                                "maxLength": 35,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "BICFI"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          },
+                          "Reference": {
+                            "description": "Unique reference, as assigned by the creditor, to unambiguously refer to the payment transaction. Usage: If available, the initiating party should provide this reference in the structured remittance information, to enable reconciliation by the creditor upon receipt of the amount of money. If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification.",
+                            "maxLength": 35,
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "title": "Beneficiary",
+                        "type": "object"
+                      },
+                      "title": "Beneficiary",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Beneficiaries GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Account Beneficiaries"
+      }
+    },
+    "/accounts/{AccountId}/direct-debits": {
+      "get": {
+        "description": "Get Direct Debits related to an account",
+        "operationId": "GetAccountDirectDebits",
+        "parameters": [
+          {
+            "description": "A unique identifier used to identify the account resource.",
+            "in": "path",
+            "name": "AccountId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Direct Debits successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "DirectDebit": {
+                      "additionalProperties": false,
+                      "description": "DirectDebit",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Direct Debit",
+                        "properties": {
+                          "AccountId": {
+                            "description": "A unique and immutable identifier used to identify the account resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "DirectDebitStatusCode": {
+                            "description": "Specifies the status of the direct debit in code form.",
+                            "enum": [
+                              "Active",
+                              "Inactive"
+                            ],
+                            "type": "string"
+                          },
+                          "MandateIdentification": {
+                            "description": "Direct Debit reference. For AUDDIS service users provide Core Reference. For non AUDDIS service users provide Core reference if possible or last used reference.",
+                            "maxLength": 35,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "Name": {
+                            "default": "UNKNOWN",
+                            "description": "Name of Service User. For non-AUDDIS direct debits, the value will be 'UNKNOWN'.",
+                            "maxLength": 70,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "PreviousPaymentAmount": {
+                            "additionalProperties": false,
+                            "description": "The amount of the most recent direct debit collection.",
+                            "properties": {
+                              "Amount": {
+                                "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+                                "type": "string"
+                              },
+                              "Currency": {
+                                "description": "A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 'Codes for the representation of currencies and funds'",
+                                "pattern": "^[A-Z]{3,3}$",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "Amount",
+                              "Currency"
+                            ],
+                            "type": "object"
+                          },
+                          "PreviousPaymentDateTime": {
+                            "description": "Date of most recent direct debit collection. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "AccountId",
+                          "MandateIdentification",
+                          "Name"
+                        ],
+                        "title": "DirectDebit",
+                        "type": "object"
+                      },
+                      "title": "DirectDebit",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Account GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Account Direct Debits"
+      }
+    },
+    "/accounts/{AccountId}/product": {
+      "get": {
+        "description": "Get Product related to an account",
+        "operationId": "GetAccountProduct",
+        "parameters": [
+          {
+            "description": "A unique identifier used to identify the account resource.",
+            "in": "path",
+            "name": "AccountId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Product successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "Product": {
+                      "additionalProperties": false,
+                      "description": "Product",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Product",
+                        "properties": {
+                          "AccountId": {
+                            "description": "A unique and immutable identifier used to identify the account resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "MarketingStateId": {
+                            "description": "Unique and unambiguous identification of a Product Marketing State.",
+                            "type": "string"
+                          },
+                          "OtherProductType": {
+                            "additionalProperties": false,
+                            "description": "This field provides extension to the ProductType enumeration. If ProductType - \"Other\" is chosen, this field must be populated with name, and description for ASPSP specific product type",
+                            "properties": {
+                              "Description": {
+                                "type": "string"
+                              },
+                              "Name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "Name",
+                              "Description"
+                            ],
+                            "type": "object"
+                          },
+                          "ProductId": {
+                            "description": "Identifier within the parent organisation for the product. Must be unique in the organisation.",
+                            "type": "string"
+                          },
+                          "ProductName": {
+                            "description": "The name of the product used for marketing purposes from a customer perspective. I.e. what the customer would recognise.",
+                            "type": "string"
+                          },
+                          "ProductType": {
+                            "description": "Descriptive code for the product category.",
+                            "enum": [
+                              "BCA",
+                              "PCA"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "AccountId",
+                          "ProductType"
+                        ],
+                        "title": "Product",
+                        "type": "object"
+                      },
+                      "title": "Product",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Product GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Account Product"
+      }
+    },
+    "/accounts/{AccountId}/standing-orders": {
+      "get": {
+        "description": "Get Standing Orders related to an account",
+        "operationId": "GetAccountStandingOrders",
+        "parameters": [
+          {
+            "description": "A unique identifier used to identify the account resource.",
+            "in": "path",
+            "name": "AccountId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Standing Orders successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "StandingOrder": {
+                      "additionalProperties": false,
+                      "description": "StandingOrder",
+                      "items": {
+                        "additionalProperties": false,
+                        "description": "Standing Order",
+                        "properties": {
+                          "AccountId": {
+                            "description": "The date on which the first payment for a Standing Order schedule will be made.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "CreditorAccount": {
+                            "additionalProperties": false,
+                            "description": "Provides the details to identify the beneficiary account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Identification assigned by an institution to identify an account. This identification is known by the account owner.",
+                                "maxLength": 34,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "Name": {
+                                "description": "Name of the account, as assigned by the account servicing institution, in agreement with the account owner in order to provide an additional means of identification of the account. Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number.",
+                                "maxLength": 70,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "IBAN",
+                                  "SortCodeAccountNumber"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          },
+                          "CreditorAgent": {
+                            "additionalProperties": false,
+                            "description": "Party that manages the account on behalf of the account owner, that is manages the registration and booking of entries on the account, calculates balances on the account and provides information about the account. This is the servicer of the beneficiary account.",
+                            "properties": {
+                              "Identification": {
+                                "description": "Unique and unambiguous identification of the servicing institution.",
+                                "maxLength": 35,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "SchemeName": {
+                                "description": "Name of the identification scheme, in a coded form as published in an external list.",
+                                "enum": [
+                                  "BICFI"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "SchemeName",
+                              "Identification"
+                            ],
+                            "type": "object"
+                          },
+                          "Frequency": {
+                            "description": "EvryDay - Every day\nEvryWorkgDay - Every working day\nIntrvlWkDay - An interval specified in weeks (01 to 09), and the day within the week (01 to 07)\nWkInMnthDay - A monthly interval, specifying the week of the month (01 to 05) and day within the week (01 to 07)\nIntrvlMnthDay - An interval specified in months (between 01 to 06, 12, 24), specifying the day within the month (-5 to -1, 1 to 31)\nQtrDay - Quarterly (either ENGLISH, SCOTTISH, or RECEIVED)\nPatterns: \nEvryDay (ScheduleCode)\nEvryWorkgDay (ScheduleCode)\nIntrvlWkDay:IntervalInWeeks:DayInWeek (ScheduleCode + IntervalInWeeks + DayInWeek)\nWkInMnthDay:WeekInMonth:DayInWeek (ScheduleCode + WeekInMonth + DayInWeek)\nIntrvlMnthDay:IntervalInMonths:DayInMonth (ScheduleCode + IntervalInMonths + DayInMonth)\nQtrDay: + either (ENGLISH, SCOTTISH or RECEIVED) ScheduleCode + QuarterDay\n\nThe regular expression for this element combines five smaller versions for each permitted pattern. To aid legibility - the components are presented individually here:\nEvryDay\nEvryWorkgDay\nIntrvlWkDay:0[1-9]:0[1-7]\nWkInMnthDay:0[1-5]:0[1-7]\nIntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01])\nQtrDay:(ENGLISH|SCOTTISH|RECEIVED)\n",
+                            "pattern": "^(EvryDay)$|^(EvryWorkgDay)$|^(IntrvlWkDay:0[1-9]:0[1-7])$|^(WkInMnthDay:0[1-5]:0[1-7])$|^(IntrvlMnthDay:(0[1-6]|12|24):(-0[1-5]|0[1-9]|[12][0-9]|3[01]))$|^(QtrDay:(ENGLISH|SCOTTISH|RECEIVED))$",
+                            "type": "string"
+                          },
+                          "NextPaymentAmount": {
+                            "additionalProperties": false,
+                            "description": "The amount of the next Standing Order",
+                            "properties": {
+                              "Amount": {
+                                "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+                                "type": "string"
+                              },
+                              "Currency": {
+                                "description": "A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 'Codes for the representation of currencies and funds'",
+                                "pattern": "^[A-Z]{3,3}$",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "Amount",
+                              "Currency"
+                            ],
+                            "type": "object"
+                          },
+                          "NextPaymentDateTime": {
+                            "description": "The date on which the next payment for a Standing Order schedule will be made. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "Reference": {
+                            "description": "Unique reference, as assigned by the creditor, to unambiguously refer to the payment transaction. Usage: If available, the initiating party should provide this reference in the structured remittance information, to enable reconciliation by the creditor upon receipt of the amount of money. If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification.",
+                            "maxLength": 35,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "StandingOrderStatusCode": {
+                            "description": "Specifies the status of the standing order in code form.",
+                            "enum": [
+                              "Active",
+                              "Inactive"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "AccountId",
+                          "Frequency",
+                          "NextPaymentDateTime",
+                          "NextPaymentAmount"
+                        ],
+                        "title": "StandingOrder",
+                        "type": "object"
+                      },
+                      "title": "StandingOrder",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Standing Orders GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Account Standing Orders"
+      }
+    },
+    "/accounts/{AccountId}/transactions": {
+      "get": {
+        "description": "Get transactions related to an account",
+        "operationId": "GetAccountTransactions",
+        "parameters": [
+          {
+            "description": "A unique identifier used to identify the account resource.",
+            "in": "path",
+            "name": "AccountId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The UTC ISO 8601 Date Time to filter transactions FROM \nNB Time component is optional - set to 00:00:00 for just Date.  \nIf the Date Time contains a timezone, the ASPSP must ignore the timezone component.",
+            "format": "date-time",
+            "in": "query",
+            "name": "fromBookingDateTime",
+            "type": "string"
+          },
+          {
+            "description": "The UTC ISO 8601 Date Time to filter transactions TO \nNB Time component is optional - set to 00:00:00 for just Date.  \nIf the Date Time contains a timezone, the ASPSP must ignore the timezone component.",
+            "format": "date-time",
+            "in": "query",
+            "name": "toBookingDateTime",
+            "type": "string"
+          },
+          {
+            "description": "The unique id of the ASPSP to which the request is issued. The unique id issued by OB is 0015800000jfwxXAAQ",
+            "in": "header",
+            "name": "x-fapi-financial-id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The time when the PSU last logged in with the TPP. \nAll dates in the HTTP headers are represented as RFC 7231 Full Dates. An example is below: \nSun, 10 Sep 2017 19:43:31 UTC",
+            "in": "header",
+            "name": "x-fapi-customer-last-logged-time",
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \\d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \\d{4} \\d{2}:\\d{2}:\\d{2} (GMT|UTC)$",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "The PSU's IP address if the PSU is currently logged in with the TPP.",
+            "in": "header",
+            "name": "x-fapi-customer-ip-address",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An RFC4122 UID used as a correlation id.",
+            "in": "header",
+            "name": "x-fapi-interaction-id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "An Authorisation Token as per https://tools.ietf.org/html/rfc6750",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Transactions successfully retrieved",
+            "headers": {
+              "x-fapi-interaction-id": {
+                "description": "An RFC4122 UID used as a correlation id.",
+                "type": "string"
+              },
+              "x-jws-signature": {
+                "description": "Header containing a detached JWS signature of the body of the payload.",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "Data": {
+                  "description": "Data",
+                  "properties": {
+                    "Transaction": {
+                      "additionalProperties": false,
+                      "description": "Transaction",
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "AccountId": {
+                            "description": "A unique and immutable identifier used to identify the account resource. This identifier has no meaning to the account owner.",
+                            "maxLength": 40,
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "Amount": {
+                            "additionalProperties": false,
+                            "description": "Amount of money in the cash entry.",
+                            "properties": {
+                              "Amount": {
+                                "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+                                "type": "string"
+                              },
+                              "Currency": {
+                                "description": "A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 'Codes for the representation of currencies and funds'",
+                                "pattern": "^[A-Z]{3,3}$",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "Amount",
+                              "Currency"
+                            ],
+                            "type": "object"
+                          },
+                          "Balance": {
+                            "additionalProperties": false,
+                            "description": "Set of elements used to define the balance as a numerical representation of the net increases and decreases in an account after a transaction entry is applied to the account.",
+                            "properties": {
+                              "Amount": {
+                                "additionalProperties": false,
+                                "description": "Amount of money of the cash balance after a transaction entry is applied to the account..",
+                                "properties": {
+                                  "Amount": {
+                                    "pattern": "^\\d{1,13}\\.\\d{1,5}$",
+                                    "type": "string"
+                                  },
+                                  "Currency": {
+                                    "description": "A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 'Codes for the representation of currencies and funds'",
+                                    "pattern": "^[A-Z]{3,3}$",
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "Amount",
+                                  "Currency"
+                                ],
+                                "type": "object"
+                              },
+                              "CreditDebitIndicator": {
+                                "description": "Indicates whether the balance is a credit or a debit balance. Usage: A zero balance is considered to be a credit balance.",
+                                "enum": [
+                                  "Credit",
+                                  "Debit"
+                                ],
+                                "type": "string"
+                              },
+                              "Type": {
+                                "description": "Balance type, in a coded form.",
+                                "enum": [
+                                  "ClosingAvailable",
+                                  "ClosingBooked",
+                                  "Expected",
+                                  "ForwardAvailable",
+                                  "Information",
+                                  "InterimAvailable",
+                                  "InterimBooked",
+                                  "OpeningAvailable",
+                                  "OpeningBooked",
+                                  "PreviouslyClosedBooked"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "Amount",
+                              "CreditDebitIndicator",
+                              "Type"
+                            ],
+                            "type": "object"
+                          },
+                          "BookingDateTime": {
+                            "description": "Date and time when a transaction entry is posted to an account on the account servicer's books. Usage: Booking date is the expected booking date, unless the status is booked, in which case it is the actual booking date. \nAll dates in the JSON payloads are represented in ISO 8601 date-time format. \nAll date-time fields in responses must include the timezone. An example is below:\n2017-04-05T10:43:07+00:00",
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "CreditDebitIndicator": {
+                            "description": "Indicates whether the transaction is a credit or a debit entry.",
+                            "enum": [
+                              "Credit",
+                              "Debit"
+                            ],
+                            "type": "string"
+                          },
+                          "ProprietaryBankTransactionCode": {
+                            "additionalProperties": false,
+                            "description": "Set of elements to fully identify a proprietary bank transaction code.",
+                            "properties": {
+                              "Code": {
+                                "description": "Proprietary bank transaction code to identify the underlying transaction.",
+                                "maxLength": 35,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "Issuer": {
+                                "description": "Identification of the issuer of the proprietary bank transaction code.",
+                                "maxLength": 35,
+                                "minLength": 1,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "Code"
+                            ],
+                            "type": "object"
+                          },
+                          "Status": {
+                            "description": "Status of a transaction entry on the books of the account servicer.",
+                            "enum": [
+                              "Booked",
+                              "Pending"
+                            ],
+                            "type": "string"
+                          },
+                          "TransactionInformation": {
+                            "description": "Further details of the transaction. This is the transaction narrative, which is unstructured text.",
+                            "maxLength": 500,
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "AccountId",
+                          "Amount",
+                          "CreditDebitIndicator",
+                          "Status",
+                          "BookingDateTime"
+                        ],
+                        "type": "object"
+                      },
+                      "minItems": 1,
+                      "title": "Transaction",
+                      "type": "array"
+                    }
+                  },
+                  "title": "Data",
+                  "type": "object"
+                },
+                "Links": {
+                  "additionalProperties": false,
+                  "description": "Links relevant to the payload",
+                  "properties": {
+                    "Next": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Prev": {
+                      "format": "uri",
+                      "type": "string"
+                    },
+                    "Self": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Self"
+                  ],
+                  "title": "Links",
+                  "type": "object"
+                },
+                "Meta": {
+                  "additionalProperties": false,
+                  "description": "Meta Data relevant to the payload",
+                  "properties": {
+                    "TotalPages": {
+                      "format": "int32",
+                      "type": "integer"
+                    }
+                  },
+                  "title": "MetaData",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "Data",
+                "Links",
+                "Meta"
+              ],
+              "title": "Account Transactions GET response",
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "headers": {
+              "Retry-After": {
+                "description": "Number in seconds to wait",
+                "type": "integer"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "PSUOAuth2Security": [
+              "accounts"
+            ]
+          }
+        ],
+        "summary": "Get Account Transactions"
+      }
+    }
+  },
+  "produces": [
+    "application/json; charset=utf-8"
+  ],
+  "responses": {
+    "400ErrorResponse": {
+      "description": "Bad Request"
+    },
+    "401ErrorResponse": {
+      "description": "Unauthorized"
+    },
+    "403ErrorResponse": {
+      "description": "Forbidden"
+    },
+    "405ErrorResponse": {
+      "description": "Method Not Allowed"
+    },
+    "406ErrorResponse": {
+      "description": "Not Acceptable"
+    },
+    "429ErrorResponse": {
+      "description": "Too Many Requests",
+      "headers": {
+        "Retry-After": {
+          "description": "Number in seconds to wait",
+          "type": "integer"
+        }
+      }
+    },
+    "500ErrorResponse": {
+      "description": "Internal Server Error"
+    }
+  },
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "PSUOAuth2Security": {
+      "authorizationUrl": "https://api.sandbox.natwest.com/authorize",
+      "description": "OAuth flow, it is required when the PSU needs to perform SCA with the ASPSP when a TPP wants to access an ASPSP resource owned by the PSU",
+      "flow": "accessCode",
+      "scopes": {
+        "accounts": "Ability to read Accounts information"
+      },
+      "tokenUrl": "https://ob.sandbox.natwest.com/token",
+      "type": "oauth2"
+    },
+    "TPPOAuth2Security": {
+      "description": "TPP client credential authorisation flow with the ASPSP",
+      "flow": "application",
+      "scopes": {
+        "tpp_client_credential": "TPP Client Credential Scope"
+      },
+      "tokenUrl": "https://ob.sandbox.natwest.com/token",
+      "type": "oauth2"
+    }
+  },
+  "swagger": "2.0"
+}
