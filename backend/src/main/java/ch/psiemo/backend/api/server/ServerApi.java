@@ -1,8 +1,10 @@
-package ch.psiemo.backend.api.server.dto;
+package ch.psiemo.backend.api.server;
 
 import ch.psiemo.backend.api.mapper.NatWestMapper;
 import ch.psiemo.backend.api.natwest.NatWestController;
 import ch.psiemo.backend.api.natwest.dto.account.NatWestAccountResponse;
+import ch.psiemo.backend.api.server.dto.AccountBalance;
+import ch.psiemo.backend.api.server.dto.Customer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
