@@ -1,7 +1,7 @@
 package ch.psiemo.backend.api.server;
 
 import ch.psiemo.backend.api.mapper.NatWestMapper;
-import ch.psiemo.backend.api.natwest.NatWestController;
+import ch.psiemo.backend.api.natwest.NatWestApi;
 import ch.psiemo.backend.api.natwest.dto.account.NatWestAccountResponse;
 import ch.psiemo.backend.api.server.dto.AccountBalance;
 import ch.psiemo.backend.api.server.dto.Customer;
@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class ServerApi {
+public class AccountController {
 
     @GetMapping("/accounts")
     @CrossOrigin(origins = "http://localhost:4200")
     public Customer getAccounts() {
         Customer customer = new Customer();
 
-        NatWestAccountResponse natWestAccounts = NatWestController.getAccounts();
+        NatWestAccountResponse natWestAccounts = NatWestApi.getAccounts();
 
         Map<String, String> accountMappings = new HashMap<>();
         natWestAccounts.getAccountWrapper().getAccounts().forEach(
@@ -34,7 +34,7 @@ public class ServerApi {
             accounts.add(
                     NatWestMapper.toAccountBalance(
                             accountMapping.getValue(),
-                            NatWestController.getBalance(accountMapping.getKey())
+                            NatWestApi.getBalance(accountMapping.getKey())
                     )
             );
         }

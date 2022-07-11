@@ -23,7 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
-public class NatWestController {
+public class NatWestApi {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     private static final MappingJackson2HttpMessageConverter CONVERTER = new MappingJackson2HttpMessageConverter(OBJECT_MAPPER);
