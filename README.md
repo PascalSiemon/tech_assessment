@@ -26,3 +26,4 @@ Then, do the following:
 - If more data shall be processed and changes are possible: Introduce state management in order to handle data throughout the Angular application
 - Introduce unit tests
 - Implement data extraction from other banks of the same customer
+- Add Exception handling (currently the backend would probably crash, if NatWest is not available
