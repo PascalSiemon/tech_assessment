@@ -8,7 +8,7 @@
         <div class="currency">{{defaultCurrency}}</div>
       </div>
     </div>
-    <div *ngFor="let account of customer.accounts" class=" box account">
+    <div *ngFor="let account of customer?.accounts" class=" box account">
       <div class="bankName"></div>
       <div class="accountType">{{account.accountType == 'Savings' ? 'Sparkonto' : 'Privatkonto'}}</div>
       <div class="balance">
