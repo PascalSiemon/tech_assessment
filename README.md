@@ -2,9 +2,10 @@
 
 
 # Backend Application
-Make sure that Java is installed and properly configured on your machine.
+Make sure that Java (version 17) and Maven are installed and properly configured on your machine.
 Run the application as follows:
 - Navigate console to directory 'backend' of the project
+- Build the application by executing 'mvn clean install'
 - Run the application by executing 'mvn spring-boot:run'
 - The application should start up and eventually be available on port 8080
 
